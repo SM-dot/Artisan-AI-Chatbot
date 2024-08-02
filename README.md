@@ -1,4 +1,3 @@
-# Artisan-AI-Chatbot
 # Artisan AI Chatbot
 
 This is a FastAPI-based chatbot application for Artisan AI, utilizing OpenAI's GPT-3.5 model. The chatbot is designed to provide assistance and answer questions regarding Artisan AI's features and services.
