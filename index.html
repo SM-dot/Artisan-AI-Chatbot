@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ava Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .chat-container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .message { margin-bottom: 20px; }
+        .message.user { text-align: right; }
+        .message.assistant { text-align: left; }
+        .message p { display: inline-block; padding: 10px; border-radius: 10px; }
+        .message.user p { background: #0084ff; color: white; }
+        .message.assistant p { background: #e4e6eb; color: black; }
+        input[type="text"] { width: calc(100% - 110px); padding: 10px; margin-right: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; border: none; background: #0084ff; color: white; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div id="chat-box"></div>
+        <input type="text" id="user-message" placeholder="Type your message here..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userMessage = document.getElementById('user-message');
+        const chatId = Date.now().toString();
+
+        function sendMessage() {
+            const message = userMessage.value;
+            if (message.trim() === '') return;
+
+            appendMessage('user', message);
+            userMessage.value = '';
+
+            fetch('http://localhost:8000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, chat_id: chatId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage('assistant', data.answer);
+            });
+        }
+
+        function appendMessage(role, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.innerHTML = `<p>${message}</p>`;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
